@@ -206,7 +206,7 @@ export default function SolarSystem() {
   const [state, setState] = useState<SceneState>({
     speed: 8,
     showOrbits: true,
-    showLabels: true,
+    showLabels: false,
   });
 
   return (

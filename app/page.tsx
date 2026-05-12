@@ -1,25 +1,29 @@
 import Link from "next/link";
+import { CosmicCard } from "@/components/ui/CosmicCard";
 import { PlanetCard } from "@/components/ui/PlanetCard";
 import { SolarSystemLoader } from "@/components/three/SolarSystemLoader";
+import { cosmicObjects } from "@/data/cosmic-objects";
 import { planets } from "@/data/planets";
 import { planetName } from "@/lib/planet-copy";
 
 export default function HomePage() {
+  const totalAtlas = planets.length + cosmicObjects.length;
+
   return (
     <main className="page-shell">
       <section className="hero-grid">
         <div className="hero-copy">
-          <div className="eyebrow">Atlas data NASA/JPL dalam bahasa Indonesia</div>
-          <h1>Jelajahi tata surya dalam simulasi 3D real-time.</h1>
+          <div className="eyebrow">Atlas data kosmos dalam bahasa Indonesia</div>
+          <h1>Jelajahi planet, galaksi, dan awal semesta.</h1>
           <p>
-            Manspace menggabungkan model WebGL responsif, data planet yang
-            dikurasi, feed NASA, dan sejarah misi antariksa dalam satu platform
-            yang ringan untuk desktop maupun HP.
+            Manspace menggabungkan simulasi 3D tata surya, dashboard planet,
+            eksoplanet, Bima Sakti, nebula, lubang hitam, dan penjelasan mudah
+            dipahami untuk pemula.
           </p>
           <div className="metric-strip">
             <div className="metric">
-              <strong>8</strong>
-              <span>planet utama</span>
+              <strong>{totalAtlas}</strong>
+              <span>objek atlas</span>
             </div>
             <div className="metric">
               <strong>3D</strong>
@@ -51,6 +55,23 @@ export default function HomePage() {
         <div className="planet-grid">
           {planets.map((planet) => (
             <PlanetCard planet={planet} key={planet.id} />
+          ))}
+        </div>
+      </section>
+
+      <section className="section-stack" aria-labelledby="cosmic-atlas">
+        <div>
+          <div className="eyebrow">Atlas semesta</div>
+          <h2 id="cosmic-atlas">Dari Dentuman Besar sampai planet di luar tata surya.</h2>
+          <p>
+            Bagian ini menambah objek kosmik populer dari Bima Sakti dan luar
+            tata surya. Setiap kartu punya ilustrasi animasi dan halaman
+            penjelasan singkat agar mudah dipahami.
+          </p>
+        </div>
+        <div className="cosmic-grid">
+          {cosmicObjects.map((object) => (
+            <CosmicCard object={object} key={object.slug} />
           ))}
         </div>
       </section>
