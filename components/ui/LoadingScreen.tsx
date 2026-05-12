@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-export function LoadingScreen({ label = "Loading orbital scene" }: { label?: string }) {
+export function LoadingScreen({ label = "Memuat simulasi orbit" }: { label?: string }) {
   return (
     <div className="glass-panel" style={{ display: "grid", minHeight: 420, placeItems: "center" }}>
       <div style={{ textAlign: "center" }}>

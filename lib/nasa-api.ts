@@ -3,9 +3,9 @@ import type { APOD, NEOItem } from "@/types/nasa-api";
 const NASA_BASE = "https://api.nasa.gov";
 
 export const fallbackAPOD: APOD = {
-  title: "Solar System Portrait",
+  title: "Potret Tata Surya",
   explanation:
-    "NASA live data is temporarily unavailable or the API key is not configured. Space Explorer keeps the platform usable with cached scientific context and local planet data.",
+    "Data langsung NASA sedang tidak tersedia atau API key belum dikonfigurasi. Manspace tetap menampilkan konteks ilmiah dan data planet lokal agar halaman bisa digunakan.",
   url: "https://www.nasa.gov/wp-content/uploads/2023/03/stsci-01gwqjz7qmyrqwjazf1xyyg0jh.png",
   media_type: "image",
   date: "cached",
@@ -15,9 +15,9 @@ export const fallbackAPOD: APOD = {
 export const fallbackNEO: NEOItem[] = [
   {
     id: "fallback-1",
-    name: "Sample near-Earth object",
+    name: "Contoh objek dekat Bumi",
     diameter_m: 120,
-    close_approach_date: "daily feed unavailable",
+    close_approach_date: "feed harian tidak tersedia",
     relative_velocity_km_s: 18.4,
     miss_distance_km: 7400000,
     hazardous: false,

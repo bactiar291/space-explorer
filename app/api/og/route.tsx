@@ -1,9 +1,12 @@
 import { ImageResponse } from "next/og";
 import { getPlanet } from "@/data/planets";
+import { copyFor, planetName } from "@/lib/planet-copy";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const planet = getPlanet(searchParams.get("planet") || "earth") || getPlanet("earth");
+  const name = planet ? planetName(planet) : "Manspace";
+  const copy = planet ? copyFor(planet) : null;
 
   return new ImageResponse(
     (
@@ -30,13 +33,13 @@ export async function GET(request: Request) {
           />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ color: "#77d8ff", letterSpacing: 8, fontSize: 24 }}>
-              SPACE EXPLORER
+              MANSPACE
             </div>
             <div style={{ fontSize: 110, fontWeight: 800, lineHeight: 1 }}>
-              {planet?.name}
+              {name}
             </div>
             <div style={{ marginTop: 22, color: "#9fb0ca", fontSize: 30, maxWidth: 640 }}>
-              {planet?.meta.description}
+              {copy?.summary || planet?.meta.description}
             </div>
           </div>
         </div>

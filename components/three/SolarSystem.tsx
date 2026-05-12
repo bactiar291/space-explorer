@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { planets } from "@/data/planets";
 import { useAdaptiveQuality } from "@/hooks/useAdaptiveQuality";
+import { planetName } from "@/lib/planet-copy";
 import type { PlanetData } from "@/types/planet";
 
 type SceneState = {
@@ -71,6 +72,7 @@ function PlanetMesh({
   const phase = planet.order * 0.72;
   const orbitSpeed = (1 / Math.sqrt(planet.orbital.distance_from_sun_au)) * 0.12;
   const selfRotation = Math.sign(planet.rotation.rotation_period_hours || 1) * 0.35;
+  const name = planetName(planet);
 
   useFrame(({ clock }, delta) => {
     const t = clock.elapsedTime * scene.speed * orbitSpeed + phase;
@@ -128,7 +130,7 @@ function PlanetMesh({
                 textTransform: "uppercase",
               }}
             >
-              {planet.name}
+              {name}
             </div>
           </Html>
         )}
@@ -146,11 +148,11 @@ function PlanetMesh({
                 lineHeight: 1.45,
               }}
             >
-              <strong>{planet.name}</strong>
+              <strong>{name}</strong>
               <br />
-              {planet.physical.diameter_km.toLocaleString()} km diameter
+              Diameter {planet.physical.diameter_km.toLocaleString("id-ID")} km
               <br />
-              {planet.moons.count} moons
+              {planet.moons.count} bulan
             </div>
           </Html>
         )}
@@ -208,12 +210,12 @@ export default function SolarSystem() {
   });
 
   return (
-    <div className="glass-panel canvas-card" aria-label="Interactive 3D solar system">
+    <div className="glass-panel canvas-card" aria-label="Simulasi 3D tata surya interaktif">
       <Scene state={state} />
       <div className="hud">
         <div className="hud-row">
           <label>
-            Speed {state.speed.toFixed(1)}x
+            Kecepatan {state.speed.toFixed(1)}x
             <input
               type="range"
               min="0.1"
@@ -224,16 +226,16 @@ export default function SolarSystem() {
             />
           </label>
           <button onClick={() => setState((prev) => ({ ...prev, showOrbits: !prev.showOrbits }))}>
-            {state.showOrbits ? "Hide orbits" : "Show orbits"}
+            {state.showOrbits ? "Sembunyikan orbit" : "Tampilkan orbit"}
           </button>
           <button onClick={() => setState((prev) => ({ ...prev, showLabels: !prev.showLabels }))}>
-            {state.showLabels ? "Hide labels" : "Show labels"}
+            {state.showLabels ? "Sembunyikan label" : "Tampilkan label"}
           </button>
         </div>
         <div className="hud-row">
           {planets.map((planet) => (
             <a className="planet-link" key={planet.slug} href={`/planets/${planet.slug}`}>
-              {planet.name}
+              {planetName(planet)}
             </a>
           ))}
         </div>
@@ -244,14 +246,14 @@ export default function SolarSystem() {
             <tr>
               <th>Planet</th>
               <th>Diameter</th>
-              <th>Distance from Sun</th>
+              <th>Jarak dari Matahari</th>
             </tr>
           </thead>
           <tbody>
             {planets.map((planet) => (
               <tr key={planet.id}>
-                <td>{planet.name}</td>
-                <td>{planet.physical.diameter_km.toLocaleString()} km</td>
+                <td>{planetName(planet)}</td>
+                <td>{planet.physical.diameter_km.toLocaleString("id-ID")} km</td>
                 <td>{planet.orbital.distance_from_sun_au} AU</td>
               </tr>
             ))}

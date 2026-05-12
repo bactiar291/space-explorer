@@ -1,19 +1,19 @@
 import { missions } from "@/data/missions/nasa-missions";
 
 export const metadata = {
-  title: "Exploration Timeline",
-  description: "Chronological timeline of important Solar System exploration missions.",
+  title: "Timeline Eksplorasi",
+  description: "Timeline kronologis misi penting eksplorasi tata surya.",
 };
 
 export default function TimelinePage() {
   return (
     <main className="page-shell">
       <section className="glass-panel" style={{ padding: 28 }}>
-        <div className="eyebrow">Exploration timeline</div>
-        <h1 className="display-title">From first orbit to interstellar pioneers.</h1>
+        <div className="eyebrow">Timeline eksplorasi</div>
+        <h1 className="display-title">Dari orbit pertama sampai penjelajah antarbintang.</h1>
         <p>
-          A curated timeline of missions and discoveries that changed how humanity
-          understands the Solar System.
+          Rangkaian misi dan penemuan yang mengubah cara manusia memahami
+          tata surya, planet, bulan, asteroid, dan batas luar ruang antariksa.
         </p>
       </section>
       <section className="section-stack">

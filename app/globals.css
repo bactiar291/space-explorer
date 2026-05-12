@@ -98,6 +98,8 @@ button {
   color: var(--cyan);
   font-weight: 800;
   letter-spacing: 0.08em;
+  transform-style: preserve-3d;
+  animation: brandFloat 4.8s cubic-bezier(.2,.8,.2,1) infinite;
 }
 
 .brand strong {
@@ -304,6 +306,11 @@ p {
   border-color: var(--line-strong);
 }
 
+.planet-card h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
 .planet-orb {
   width: 46px;
   height: 46px;
@@ -311,6 +318,89 @@ p {
   margin-bottom: 18px;
   box-shadow: inset -10px -8px 18px rgba(0,0,0,0.42), 0 0 24px var(--orb);
   background: radial-gradient(circle at 34% 30%, #ffffff, var(--orb) 36%, #101421 76%);
+  animation: planetPulse 5.5s cubic-bezier(.2,.8,.2,1) infinite;
+}
+
+.planet-stage {
+  min-height: 620px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(119, 216, 255, 0.18), transparent 38%),
+    linear-gradient(145deg, rgba(255,255,255,0.05), transparent 50%),
+    var(--panel);
+  box-shadow: 0 34px 120px rgba(0,0,0,0.34);
+  backdrop-filter: blur(18px);
+}
+
+.planet-stage::after {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(151, 190, 255, 0.1);
+  pointer-events: none;
+}
+
+.planet-stage canvas {
+  outline: none;
+}
+
+.planet-stage-copy {
+  position: absolute;
+  left: clamp(18px, 3vw, 34px);
+  right: clamp(18px, 3vw, 34px);
+  bottom: clamp(18px, 3vw, 34px);
+  z-index: 2;
+  display: grid;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.planet-stage-copy span {
+  color: var(--gold);
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+}
+
+.planet-stage-copy strong {
+  font-size: clamp(2.2rem, 5vw, 5rem);
+  line-height: 0.9;
+}
+
+.planet-stage-copy em {
+  max-width: 560px;
+  color: var(--muted);
+  font-style: normal;
+}
+
+.explain-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.explain-grid article {
+  border-left: 1px solid var(--line-strong);
+  padding: 4px 0 4px 16px;
+}
+
+.explain-grid h3 {
+  margin: 0;
+  color: var(--gold);
+}
+
+.fact-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fact-row span {
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,0.22);
+  color: var(--muted);
+  padding: 10px 12px;
 }
 
 .data-grid {
@@ -411,6 +501,26 @@ p {
   }
 }
 
+@keyframes planetPulse {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    filter: saturate(1);
+  }
+  50% {
+    transform: translateY(-3px) rotate(7deg);
+    filter: saturate(1.28);
+  }
+}
+
+@keyframes brandFloat {
+  0%, 100% {
+    transform: perspective(500px) rotateX(0deg) rotateY(0deg) translateY(0);
+  }
+  50% {
+    transform: perspective(500px) rotateX(9deg) rotateY(-16deg) translateY(-2px);
+  }
+}
+
 @media (max-width: 1100px) {
   .hero-grid,
   .feed-grid {
@@ -418,12 +528,14 @@ p {
   }
 
   .hero-copy,
-  .canvas-card {
+  .canvas-card,
+  .planet-stage {
     min-height: 520px;
   }
 
   .planet-grid,
-  .data-grid {
+  .data-grid,
+  .explain-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -443,7 +555,8 @@ p {
   }
 
   .hero-copy,
-  .canvas-card {
+  .canvas-card,
+  .planet-stage {
     min-height: 430px;
   }
 
@@ -454,7 +567,8 @@ p {
 
   .metric-strip,
   .planet-grid,
-  .data-grid {
+  .data-grid,
+  .explain-grid {
     grid-template-columns: 1fr;
   }
 

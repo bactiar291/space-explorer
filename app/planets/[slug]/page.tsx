@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { CSSProperties } from "react";
+import { PlanetHeroScene } from "@/components/three/PlanetHeroScene";
 import { getPlanet, planets } from "@/data/planets";
+import { copyFor, gasName, idPhrase, planetName } from "@/lib/planet-copy";
 import { comparisonRows, formatCompact, planetMetrics } from "@/lib/planet-utils";
 
 type Params = {
@@ -19,12 +20,12 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!planet) return {};
 
   return {
-    title: `${planet.name} - Interactive 3D Planet`,
-    description: planet.meta.description,
+    title: `${planetName(planet)} - Dashboard Planet 3D`,
+    description: copyFor(planet)?.summary || planet.meta.description,
     keywords: planet.meta.seo_keywords,
     openGraph: {
-      title: `${planet.name} | Space Explorer`,
-      description: planet.meta.description,
+      title: `${planetName(planet)} | Manspace`,
+      description: copyFor(planet)?.summary || planet.meta.description,
       images: [`/api/og?planet=${planet.slug}`],
     },
     twitter: { card: "summary_large_image" },
@@ -37,12 +38,14 @@ export default async function PlanetDetailPage({ params }: Params) {
   if (!planet) notFound();
   const metrics = planetMetrics(planet);
   const comparison = comparisonRows("diameter");
+  const copy = copyFor(planet);
+  const name = planetName(planet);
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "AstronomicalObject",
-    name: planet.name,
-    description: planet.meta.description,
+    name,
+    description: copy?.summary || planet.meta.description,
     url: `/planets/${planet.slug}`,
   };
 
@@ -54,9 +57,9 @@ export default async function PlanetDetailPage({ params }: Params) {
       />
       <section className="hero-grid">
         <div className="hero-copy">
-          <div className="eyebrow">Planet profile</div>
-          <h1>{planet.name}</h1>
-          <p>{planet.meta.description}</p>
+          <div className="eyebrow">Dashboard planet</div>
+          <h1>{name}</h1>
+          <p>{copy?.summary || planet.meta.description}</p>
           <div className="metric-strip">
             <div className="metric">
               <strong>{formatCompact(planet.physical.diameter_km)}</strong>
@@ -64,47 +67,23 @@ export default async function PlanetDetailPage({ params }: Params) {
             </div>
             <div className="metric">
               <strong>{planet.orbital.distance_from_sun_au}</strong>
-              <span>astronomical units</span>
+              <span>satuan astronomi</span>
             </div>
             <div className="metric">
               <strong>{planet.moons.count}</strong>
-              <span>confirmed moons</span>
+              <span>bulan terkonfirmasi</span>
             </div>
           </div>
           <div style={{ marginTop: 28 }}>
-            <Link className="ghost-button" href="/">Back to Solar System</Link>
+            <Link className="ghost-button" href="/">Kembali ke Tata Surya</Link>
           </div>
         </div>
-        <div className="glass-panel canvas-card" style={{ display: "grid", placeItems: "center" }}>
-          <div
-            style={{
-              "--orb": planet.visual.color_primary,
-              width: "min(52vw, 340px)",
-              height: "min(52vw, 340px)",
-            } as CSSProperties}
-            className="planet-orb"
-            aria-label={`${planet.name} visual rendering`}
-          />
-          {planet.visual.has_rings && (
-            <div
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                width: "min(70vw, 520px)",
-                height: "min(24vw, 150px)",
-                border: `2px solid ${planet.visual.color_secondary}`,
-                transform: "rotate(-14deg)",
-                borderRadius: "50%",
-                opacity: 0.48,
-              }}
-            />
-          )}
-        </div>
+        <PlanetHeroScene planet={planet} name={name} tagline={copy?.tagline || "Planet utama tata surya"} />
       </section>
 
       <section className="section-stack">
         <div className="glass-panel" style={{ padding: 24 }}>
-          <div className="eyebrow">Scientific data</div>
+          <div className="eyebrow">Data ilmiah</div>
           <div className="data-grid">
             {metrics.map(([label, value, unit]) => (
               <div className="data-card" key={label}>
@@ -119,30 +98,52 @@ export default async function PlanetDetailPage({ params }: Params) {
         </div>
 
         <div className="glass-panel" style={{ padding: 24 }}>
-          <div className="eyebrow">Atmosphere</div>
-          <h2>{planet.atmosphere.present ? "Composition profile" : "No substantial atmosphere"}</h2>
+          <div className="eyebrow">Penjelasan ringkas</div>
+          <div className="explain-grid">
+            <article>
+              <h3>Orbit</h3>
+              <p>{copy?.orbit}</p>
+            </article>
+            <article>
+              <h3>Permukaan</h3>
+              <p>{copy?.surface}</p>
+            </article>
+            <article>
+              <h3>Atmosfer</h3>
+              <p>{copy?.atmosphere}</p>
+            </article>
+            <article>
+              <h3>Eksplorasi</h3>
+              <p>{copy?.exploration}</p>
+            </article>
+          </div>
+        </div>
+
+        <div className="glass-panel" style={{ padding: 24 }}>
+          <div className="eyebrow">Atmosfer</div>
+          <h2>{planet.atmosphere.present ? "Komposisi utama" : "Tidak ada atmosfer tebal"}</h2>
           <div className="data-grid" style={{ marginTop: 18 }}>
             {planet.atmosphere.composition.length > 0 ? (
               planet.atmosphere.composition.map((item) => (
                 <div className="data-card" key={item.gas}>
-                  <span>{item.gas}</span>
+                  <span>{gasName(item.gas)}</span>
                   <strong>{item.percentage}%</strong>
                 </div>
               ))
             ) : (
-              <p>No atmospheric composition data available.</p>
+              <p>Data komposisi atmosfer tidak tersedia.</p>
             )}
           </div>
         </div>
 
         <div className="glass-panel" style={{ padding: 24 }}>
-          <div className="eyebrow">Comparison</div>
-          <h2>Diameter relative to every major planet.</h2>
+          <div className="eyebrow">Perbandingan</div>
+          <h2>Diameter dibandingkan semua planet utama.</h2>
           <div style={{ display: "grid", gap: 10, marginTop: 20 }}>
             {comparison.map((row) => (
               <div key={row.planet.id} style={{ display: "grid", gridTemplateColumns: "90px 1fr 92px", gap: 12, alignItems: "center" }}>
                 <span style={{ color: row.planet.slug === planet.slug ? row.planet.visual.color_primary : "var(--muted)" }}>
-                  {row.planet.name}
+                  {planetName(row.planet)}
                 </span>
                 <div style={{ height: 12, border: "1px solid var(--line)", background: "rgba(0,0,0,.2)" }}>
                   <div
@@ -162,21 +163,30 @@ export default async function PlanetDetailPage({ params }: Params) {
         </div>
 
         <div className="glass-panel" style={{ padding: 24 }}>
-          <div className="eyebrow">Exploration history</div>
-          <h2>Spacecraft and discovery record.</h2>
+          <div className="eyebrow">Riwayat eksplorasi</div>
+          <h2>Catatan penemuan dan kunjungan wahana.</h2>
           <div className="data-grid" style={{ marginTop: 18 }}>
             <div className="data-card">
-              <span>Known since</span>
-              <strong>{planet.discovery.known_since}</strong>
+              <span>Dikenal sejak</span>
+              <strong>{idPhrase(planet.discovery.known_since)}</strong>
             </div>
             <div className="data-card">
-              <span>Discovered by</span>
-              <strong>{planet.discovery.discovered_by || "Ancient observers"}</strong>
+              <span>Ditemukan oleh</span>
+              <strong>{idPhrase(planet.discovery.discovered_by) || "Pengamat zaman kuno"}</strong>
             </div>
             <div className="data-card">
-              <span>Visited by</span>
+              <span>Dikunjungi oleh</span>
               <strong>{planet.discovery.spacecraft_visited.join(", ")}</strong>
             </div>
+          </div>
+        </div>
+
+        <div className="glass-panel" style={{ padding: 24 }}>
+          <div className="eyebrow">Fakta cepat</div>
+          <div className="fact-row">
+            {(copy?.facts || planet.meta.fun_facts).map((fact) => (
+              <span key={fact}>{fact}</span>
+            ))}
           </div>
         </div>
       </section>

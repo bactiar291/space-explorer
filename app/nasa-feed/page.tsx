@@ -2,8 +2,8 @@ import { fetchAPOD, fetchNEO } from "@/lib/nasa-api";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "NASA Live Feed",
-  description: "Astronomy Picture of the Day and near-Earth object tracker with cached fallback data.",
+  title: "Feed NASA",
+  description: "Gambar astronomi harian dan pelacak objek dekat Bumi dengan cache cadangan.",
 };
 
 export default async function NASAFeedPage() {
@@ -12,17 +12,18 @@ export default async function NASAFeedPage() {
   return (
     <main className="page-shell">
       <section className="glass-panel" style={{ padding: 28 }}>
-        <div className="eyebrow">NASA live feed</div>
-        <h1 className="display-title">Daily astronomy and near-Earth objects.</h1>
+        <div className="eyebrow">Feed langsung NASA</div>
+        <h1 className="display-title">Astronomi harian dan objek dekat Bumi.</h1>
         <p>
-          Data is requested through Space Explorer proxy routes and cached with
-          graceful fallback when NASA API quota or network access is unavailable.
+          Data diminta lewat route proxy Manspace dan diberi cache. Jika kuota
+          NASA penuh atau jaringan bermasalah, halaman tetap menampilkan data
+          cadangan agar tidak kosong.
         </p>
       </section>
 
       <section className="feed-grid" style={{ marginTop: 24 }}>
         <article className="glass-panel" style={{ padding: 20 }}>
-          <div className="eyebrow">Astronomy Picture of the Day</div>
+          <div className="eyebrow">Gambar Astronomi Hari Ini</div>
           {apod.media_type === "image" ? (
             <img className="apod-media" src={apod.url} alt={apod.title} />
           ) : (
@@ -37,19 +38,19 @@ export default async function NASAFeedPage() {
         </article>
 
         <aside className="glass-panel" style={{ padding: 20 }}>
-          <div className="eyebrow">Near Earth Objects</div>
-          <h2>This week</h2>
+          <div className="eyebrow">Objek Dekat Bumi</div>
+          <h2>Minggu ini</h2>
           <div className="neo-list" style={{ marginTop: 16 }}>
             {neos.map((neo) => (
               <div className="neo-item" key={neo.id}>
                 <strong>{neo.name}</strong>
                 <p style={{ margin: "6px 0" }}>
-                  Diameter about {neo.diameter_m.toLocaleString()} m. Closest
-                  approach: {neo.close_approach_date}.
+                  Diameter sekitar {neo.diameter_m.toLocaleString("id-ID")} m.
+                  Perlintasan terdekat: {neo.close_approach_date}.
                 </p>
                 <p style={{ margin: 0, color: neo.hazardous ? "var(--danger)" : "var(--success)" }}>
-                  {neo.relative_velocity_km_s.toFixed(1)} km/s - miss distance{" "}
-                  {Math.round(neo.miss_distance_km).toLocaleString()} km
+                  {neo.relative_velocity_km_s.toFixed(1)} km/s - jarak lintas{" "}
+                  {Math.round(neo.miss_distance_km).toLocaleString("id-ID")} km
                 </p>
               </div>
             ))}

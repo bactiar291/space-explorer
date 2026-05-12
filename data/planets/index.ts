@@ -520,5 +520,5 @@ export function getPlanet(slug: string) {
 }
 
 export function formatNumber(value: number) {
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(value);
+  return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(value);
 }
