@@ -2,8 +2,9 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { createPlanetTextureSet } from "@/lib/planet-textures";
 import type { PlanetData } from "@/types/planet";
 
 function PlanetBody({ planet }: { planet: PlanetData }) {
@@ -11,6 +12,15 @@ function PlanetBody({ planet }: { planet: PlanetData }) {
   const planetMesh = useRef<THREE.Mesh>(null);
   const cloudMesh = useRef<THREE.Mesh>(null);
   const tilt = THREE.MathUtils.degToRad(planet.rotation.axial_tilt_deg);
+  const textures = useMemo(() => createPlanetTextureSet(planet, 1400), [planet]);
+
+  useEffect(() => {
+    return () => {
+      textures.map?.dispose();
+      textures.bumpMap?.dispose();
+      textures.cloudMap?.dispose();
+    };
+  }, [textures]);
 
   useFrame((_, delta) => {
     if (group.current) group.current.rotation.y += delta * 0.08;
@@ -23,20 +33,25 @@ function PlanetBody({ planet }: { planet: PlanetData }) {
       <mesh ref={planetMesh}>
         <sphereGeometry args={[2.25, 96, 96]} />
         <meshStandardMaterial
-          color={planet.visual.color_primary}
-          roughness={0.66}
-          metalness={0.04}
+          map={textures.map}
+          bumpMap={textures.bumpMap}
+          bumpScale={planet.slug === "jupiter" || planet.slug === "saturn" ? 0.018 : 0.075}
+          color="#ffffff"
+          roughness={0.82}
+          metalness={0.02}
           emissive={planet.visual.color_secondary}
-          emissiveIntensity={0.1}
+          emissiveIntensity={0.035}
         />
       </mesh>
       <mesh ref={cloudMesh}>
         <sphereGeometry args={[2.31, 64, 64]} />
         <meshBasicMaterial
+          map={textures.cloudMap}
           color="#ffffff"
           transparent
-          opacity={planet.slug === "earth" ? 0.16 : 0.06}
+          opacity={planet.slug === "earth" ? 0.34 : planet.slug === "venus" ? 0.2 : 0.04}
           blending={THREE.AdditiveBlending}
+          depthWrite={false}
         />
       </mesh>
       <mesh>
@@ -104,11 +119,11 @@ function MoonDots({ planet }: { planet: PlanetData }) {
 
 function Scene({ planet }: { planet: PlanetData }) {
   return (
-    <Canvas dpr={[1, 1.8]} camera={{ position: [0, 1.2, 8], fov: 42 }} gl={{ antialias: true }}>
+    <Canvas dpr={[1, 2]} camera={{ position: [0, 1.15, 8], fov: 40 }} gl={{ antialias: true }}>
       <color attach="background" args={["#02030a"]} />
-      <ambientLight intensity={0.65} />
-      <directionalLight position={[5, 3, 7]} intensity={3.2} color="#f8d9a2" />
-      <pointLight position={[-4, -3, 3]} intensity={10} color={planet.visual.color_primary} />
+      <ambientLight intensity={0.38} />
+      <directionalLight position={[5, 3, 7]} intensity={4.8} color="#f8d9a2" />
+      <pointLight position={[-4, -3, 3]} intensity={16} color={planet.visual.color_primary} />
       <Stars radius={80} depth={40} count={1400} factor={3.8} saturation={0} fade speed={0.35} />
       <PlanetBody planet={planet} />
       <MoonDots planet={planet} />

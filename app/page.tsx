@@ -42,6 +42,44 @@ export default function HomePage() {
         <SolarSystemLoader />
       </section>
 
+      <section className="launch-dashboard" aria-labelledby="mission-control">
+        <div className="dashboard-panel dashboard-intro">
+          <div className="eyebrow">Dashboard pembuka</div>
+          <h2 id="mission-control">Mulai eksplorasi tanpa bingung.</h2>
+          <p>
+            Pilih jalur belajar: pahami awal semesta, masuk ke galaksi,
+            lalu turun ke planet dan bulan yang paling menarik untuk dipelajari.
+          </p>
+          <div className="dashboard-actions">
+            <Link href="/objects/dentuman-besar">Mulai dari Dentuman Besar</Link>
+            <Link href="/objects/bima-sakti">Masuk ke Bima Sakti</Link>
+            <Link href="/planets/earth">Lihat Bumi 3D</Link>
+          </div>
+        </div>
+        <div className="dashboard-panel dashboard-orbit" aria-hidden="true">
+          <span className="orbit-core">MS</span>
+          <span className="orbit-ring ring-one" />
+          <span className="orbit-ring ring-two" />
+          <span className="orbit-dot dot-one" />
+          <span className="orbit-dot dot-two" />
+          <span className="orbit-dot dot-three" />
+        </div>
+        <div className="dashboard-panel dashboard-readout">
+          <div>
+            <strong>{totalAtlas}</strong>
+            <span>objek kosmik</span>
+          </div>
+          <div>
+            <strong>47</strong>
+            <span>halaman statis cepat</span>
+          </div>
+          <div>
+            <strong>HD</strong>
+            <span>tekstur planet prosedural</span>
+          </div>
+        </div>
+      </section>
+
       <section className="section-stack" aria-labelledby="planet-atlas">
         <div>
           <div className="eyebrow">Atlas planet</div>

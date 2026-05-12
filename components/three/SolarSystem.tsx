@@ -2,12 +2,13 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Stars, Html } from "@react-three/drei";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { planets } from "@/data/planets";
 import { useAdaptiveQuality } from "@/hooks/useAdaptiveQuality";
 import { planetName } from "@/lib/planet-copy";
+import { createPlanetTextureSet } from "@/lib/planet-textures";
 import type { PlanetData } from "@/types/planet";
 
 type SceneState = {
@@ -73,6 +74,15 @@ function PlanetMesh({
   const orbitSpeed = (1 / Math.sqrt(planet.orbital.distance_from_sun_au)) * 0.12;
   const selfRotation = Math.sign(planet.rotation.rotation_period_hours || 1) * 0.35;
   const name = planetName(planet);
+  const textures = useMemo(() => createPlanetTextureSet(planet, 512), [planet]);
+
+  useEffect(() => {
+    return () => {
+      textures.map?.dispose();
+      textures.bumpMap?.dispose();
+      textures.cloudMap?.dispose();
+    };
+  }, [textures]);
 
   useFrame(({ clock }, delta) => {
     const t = clock.elapsedTime * scene.speed * orbitSpeed + phase;
@@ -96,13 +106,30 @@ function PlanetMesh({
         >
           <sphereGeometry args={[radius, segments, segments]} />
           <meshStandardMaterial
-            color={planet.visual.color_primary}
-            roughness={0.72}
-            metalness={0.05}
+            map={textures.map}
+            bumpMap={textures.bumpMap}
+            bumpScale={0.035}
+            color="#ffffff"
+            roughness={0.82}
+            metalness={0.02}
             emissive={planet.visual.color_secondary}
-            emissiveIntensity={hovered ? 0.22 : 0.04}
+            emissiveIntensity={hovered ? 0.14 : 0.015}
           />
         </mesh>
+
+        {(planet.slug === "earth" || planet.slug === "venus") && (
+          <mesh>
+            <sphereGeometry args={[radius * 1.018, Math.max(24, segments), Math.max(24, segments)]} />
+            <meshBasicMaterial
+              map={textures.cloudMap}
+              color="#ffffff"
+              transparent
+              opacity={planet.slug === "earth" ? 0.28 : 0.18}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          </mesh>
+        )}
 
         {planet.visual.has_rings && (
           <mesh rotation={[Math.PI / 2 + planet.rotation.axial_tilt_deg * 0.01, 0, 0]}>

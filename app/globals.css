@@ -90,16 +90,50 @@ button {
 .brand-mark {
   width: 44px;
   height: 44px;
+  position: relative;
   display: grid;
   place-items: center;
   border: 1px solid var(--line-strong);
-  background: linear-gradient(145deg, rgba(119, 216, 255, 0.22), rgba(255,255,255,0.04));
-  box-shadow: 0 18px 50px rgba(58, 133, 255, 0.18);
+  border-radius: 13px;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 26% 18%, rgba(255,255,255,.72), transparent 18%),
+    linear-gradient(145deg, rgba(119, 216, 255, 0.42), rgba(38, 75, 145, 0.16) 52%, rgba(255,255,255,0.04));
+  box-shadow:
+    inset -8px -10px 16px rgba(0,0,0,.42),
+    inset 5px 5px 12px rgba(255,255,255,.12),
+    0 18px 50px rgba(58, 133, 255, 0.22);
   color: var(--cyan);
   font-weight: 800;
   letter-spacing: 0.08em;
+  text-shadow: 0 2px 0 rgba(0,0,0,.5), 0 0 18px rgba(119,216,255,.7);
   transform-style: preserve-3d;
   animation: brandFloat 4.8s cubic-bezier(.2,.8,.2,1) infinite;
+}
+
+.brand-mark::before,
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.brand-mark::before {
+  inset: 5px;
+  z-index: -1;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 10px;
+  transform: translateZ(-14px);
+}
+
+.brand-mark::after {
+  width: 66px;
+  height: 18px;
+  border: 1px solid rgba(247,201,112,.64);
+  border-left-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  filter: drop-shadow(0 0 12px rgba(247,201,112,.34));
 }
 
 .brand strong {
@@ -236,6 +270,160 @@ p {
 
 .canvas-card canvas {
   outline: none;
+}
+
+.launch-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, .85fr) minmax(240px, .65fr);
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.dashboard-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.06), transparent 48%),
+    rgba(8, 12, 24, .76);
+  box-shadow: 0 24px 90px rgba(0,0,0,.26);
+  backdrop-filter: blur(16px);
+}
+
+.dashboard-intro {
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.dashboard-intro h2 {
+  max-width: 760px;
+}
+
+.dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.dashboard-actions a {
+  border: 1px solid var(--line);
+  background: rgba(4, 8, 18, 0.72);
+  color: var(--text);
+  padding: 10px 12px;
+}
+
+.dashboard-actions a:hover {
+  border-color: var(--line-strong);
+  color: var(--gold);
+}
+
+.dashboard-orbit {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(119,216,255,.18), transparent 40%),
+    rgba(8, 12, 24, .72);
+}
+
+.orbit-core {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 28% 22%, rgba(255,255,255,.8), transparent 22%),
+    linear-gradient(145deg, #89e0ff, #244989 60%, #050914);
+  color: #eaf8ff;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-shadow: 0 2px 0 rgba(0,0,0,.6);
+  box-shadow:
+    inset -18px -16px 26px rgba(0,0,0,.5),
+    0 0 70px rgba(119,216,255,.32);
+  animation: brandFloat 5.2s cubic-bezier(.2,.8,.2,1) infinite;
+}
+
+.orbit-ring,
+.orbit-dot {
+  position: absolute;
+  pointer-events: none;
+}
+
+.orbit-ring {
+  border: 1px solid rgba(151,190,255,.22);
+  border-radius: 50%;
+}
+
+.ring-one {
+  width: 250px;
+  height: 84px;
+  transform: rotate(-18deg);
+  animation: orbitSweep 12s linear infinite;
+}
+
+.ring-two {
+  width: 200px;
+  height: 200px;
+  transform: rotate(24deg);
+  animation: orbitSweep 18s linear infinite reverse;
+}
+
+.orbit-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 24px rgba(247,201,112,.76);
+}
+
+.dot-one {
+  transform: translate(118px, -18px);
+}
+
+.dot-two {
+  width: 7px;
+  height: 7px;
+  background: var(--cyan);
+  transform: translate(-95px, 46px);
+}
+
+.dot-three {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  transform: translate(28px, 102px);
+}
+
+.dashboard-readout {
+  display: grid;
+}
+
+.dashboard-readout div {
+  display: grid;
+  align-content: center;
+  min-height: 86px;
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-readout div:last-child {
+  border-bottom: 0;
+}
+
+.dashboard-readout strong {
+  color: var(--gold);
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  line-height: 1;
+}
+
+.dashboard-readout span {
+  color: var(--muted);
+  font-size: .76rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
 }
 
 .hud {
@@ -698,6 +886,12 @@ p {
   }
 }
 
+@keyframes orbitSweep {
+  to {
+    rotate: 360deg;
+  }
+}
+
 @keyframes cosmicDrift {
   0%, 100% {
     transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
@@ -715,7 +909,8 @@ p {
 
 @media (max-width: 1100px) {
   .hero-grid,
-  .feed-grid {
+  .feed-grid,
+  .launch-dashboard {
     grid-template-columns: 1fr;
   }
 
@@ -758,8 +953,26 @@ p {
     padding: 14px;
   }
 
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+  }
+
   .hero-grid {
     gap: 14px;
+  }
+
+  .launch-dashboard {
+    margin-top: 14px;
+  }
+
+  .dashboard-orbit {
+    min-height: 220px;
+  }
+
+  .dashboard-readout {
+    grid-template-columns: 1fr;
   }
 
   .hero-copy,
