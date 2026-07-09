@@ -9,6 +9,7 @@ import { planets } from "@/data/planets";
 import { useAdaptiveQuality } from "@/hooks/useAdaptiveQuality";
 import { planetName } from "@/lib/planet-copy";
 import { createPlanetTextureSet } from "@/lib/planet-textures";
+import { Atmosphere } from "@/components/three/Atmosphere";
 import type { PlanetData } from "@/types/planet";
 
 type SceneState = {
@@ -143,6 +144,8 @@ function PlanetMesh({
           </mesh>
         )}
 
+        <Atmosphere radius={radius * 1.08} color={planet.visual.color_secondary} intensity={0.9} />
+
         {scene.showLabels && (
           <Html distanceFactor={16} position={[0, radius + 0.55, 0]} center>
             <div
@@ -217,7 +220,7 @@ function Scene({ state }: { state: SceneState }) {
   return (
     <Canvas dpr={quality.dpr} camera={{ position: [0, 24, 35], fov: 48 }} gl={{ antialias: true }}>
       <color attach="background" args={["#02030a"]} />
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.22} />
       <Stars radius={120} depth={60} count={2200} factor={4} saturation={0} fade speed={0.4} />
       <Sun />
       <AsteroidBelt count={quality.asteroidCount} />

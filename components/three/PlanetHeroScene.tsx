@@ -5,7 +5,10 @@ import { Stars } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { createPlanetTextureSet } from "@/lib/planet-textures";
+import { Atmosphere } from "@/components/three/Atmosphere";
 import type { PlanetData } from "@/types/planet";
+
+const PLANET_RADIUS = 2.25;
 
 function PlanetBody({ planet }: { planet: PlanetData }) {
   const group = useRef<THREE.Group>(null);
@@ -22,55 +25,48 @@ function PlanetBody({ planet }: { planet: PlanetData }) {
     };
   }, [textures]);
 
+  const hasClouds = planet.slug === "earth" || planet.slug === "venus";
+  const cloudOpacity = planet.slug === "earth" ? 0.85 : planet.slug === "venus" ? 0.6 : 0;
+
   useFrame((_, delta) => {
-    if (group.current) group.current.rotation.y += delta * 0.08;
-    if (planetMesh.current) planetMesh.current.rotation.y += delta * 0.28;
-    if (cloudMesh.current) cloudMesh.current.rotation.y += delta * 0.38;
+    if (planetMesh.current) planetMesh.current.rotation.y += delta * 0.06;
+    if (cloudMesh.current) cloudMesh.current.rotation.y += delta * 0.085;
   });
 
   return (
-    <group ref={group} rotation={[tilt * 0.35, 0, -tilt * 0.18]}>
+    <group ref={group} rotation={[tilt, 0, 0]}>
       <mesh ref={planetMesh}>
-        <sphereGeometry args={[2.25, 96, 96]} />
+        <sphereGeometry args={[PLANET_RADIUS, 128, 128]} />
         <meshStandardMaterial
           map={textures.map}
           bumpMap={textures.bumpMap}
-          bumpScale={planet.slug === "jupiter" || planet.slug === "saturn" ? 0.018 : 0.075}
-          color="#ffffff"
-          roughness={0.82}
-          metalness={0.02}
-          emissive={planet.visual.color_secondary}
-          emissiveIntensity={0.035}
+          bumpScale={planet.slug === "jupiter" || planet.slug === "saturn" ? 0.02 : 0.04}
+          roughness={0.9}
+          metalness={0.0}
         />
       </mesh>
-      <mesh ref={cloudMesh}>
-        <sphereGeometry args={[2.31, 64, 64]} />
-        <meshBasicMaterial
-          map={textures.cloudMap}
-          color="#ffffff"
-          transparent
-          opacity={planet.slug === "earth" ? 0.34 : planet.slug === "venus" ? 0.2 : 0.04}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
-      <mesh>
-        <sphereGeometry args={[2.55, 64, 64]} />
-        <meshBasicMaterial
-          color={planet.visual.color_primary}
-          transparent
-          opacity={0.14}
-          blending={THREE.AdditiveBlending}
-          side={THREE.BackSide}
-        />
-      </mesh>
+
+      {hasClouds && (
+        <mesh ref={cloudMesh}>
+          <sphereGeometry args={[PLANET_RADIUS * 1.015, 96, 96]} />
+          <meshStandardMaterial
+            map={textures.cloudMap}
+            transparent
+            opacity={cloudOpacity}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
+
+      <Atmosphere radius={PLANET_RADIUS * 1.04} color={planet.visual.color_secondary} intensity={1.15} />
+
       {planet.visual.has_rings && (
-        <mesh rotation={[Math.PI / 2.65, 0, 0]}>
-          <ringGeometry args={[3.0, 4.45, 160]} />
+        <mesh rotation={[Math.PI / 2.2, 0, 0]}>
+          <ringGeometry args={[PLANET_RADIUS * 1.4, PLANET_RADIUS * 2.1, 200]} />
           <meshBasicMaterial
             color={planet.visual.color_secondary}
             transparent
-            opacity={0.52}
+            opacity={0.5}
             side={THREE.DoubleSide}
           />
         </mesh>
@@ -119,12 +115,12 @@ function MoonDots({ planet }: { planet: PlanetData }) {
 
 function Scene({ planet }: { planet: PlanetData }) {
   return (
-    <Canvas dpr={[1, 2]} camera={{ position: [0, 1.15, 8], fov: 40 }} gl={{ antialias: true }}>
+    <Canvas dpr={[1, 2]} camera={{ position: [0, 0.6, 7.4], fov: 42 }} gl={{ antialias: true }}>
       <color attach="background" args={["#02030a"]} />
-      <ambientLight intensity={0.38} />
-      <directionalLight position={[5, 3, 7]} intensity={4.8} color="#f8d9a2" />
-      <pointLight position={[-4, -3, 3]} intensity={16} color={planet.visual.color_primary} />
-      <Stars radius={80} depth={40} count={1400} factor={3.8} saturation={0} fade speed={0.35} />
+      <ambientLight intensity={0.22} />
+      <directionalLight position={[5, 2.5, 6]} intensity={2.6} color="#fff2dd" />
+      <directionalLight position={[-6, -2, -4]} intensity={0.5} color={planet.visual.color_primary} />
+      <Stars radius={90} depth={50} count={1800} factor={4} saturation={0} fade speed={0.3} />
       <PlanetBody planet={planet} />
       <MoonDots planet={planet} />
     </Canvas>
