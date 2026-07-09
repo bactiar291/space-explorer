@@ -220,7 +220,7 @@ function Scene({ state }: { state: SceneState }) {
   return (
     <Canvas dpr={quality.dpr} camera={{ position: [0, 24, 35], fov: 48 }} gl={{ antialias: true }}>
       <color attach="background" args={["#02030a"]} />
-      <ambientLight intensity={0.22} />
+      <ambientLight intensity={0.35} />
       <Stars radius={120} depth={60} count={2200} factor={4} saturation={0} fade speed={0.4} />
       <Sun />
       <AsteroidBelt count={quality.asteroidCount} />

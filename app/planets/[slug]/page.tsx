@@ -81,6 +81,18 @@ export default async function PlanetDetailPage({ params }: Params) {
         <PlanetHeroScene planet={planet} name={name} tagline={copy?.tagline || "Planet utama tata surya"} />
       </section>
 
+      <nav className="planet-switcher" aria-label="Pilih planet lain">
+        {planets.map((p) => (
+          <Link
+            key={p.id}
+            href={`/planets/${p.slug}`}
+            className={p.slug === planet.slug ? "active" : ""}
+          >
+            {planetName(p)}
+          </Link>
+        ))}
+      </nav>
+
       <section className="section-stack">
         <div className="glass-panel" style={{ padding: 24 }}>
           <div className="eyebrow">Data ilmiah</div>

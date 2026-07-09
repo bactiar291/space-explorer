@@ -26,7 +26,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <header className="site-nav">
           <Link href="/" className="brand" aria-label="Beranda Manspace">
-            <span className="brand-mark">MS</span>
+            <span className="brand-mark" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="4" fill="currentColor" />
+                <ellipse
+                  cx="12"
+                  cy="12"
+                  rx="10"
+                  ry="4.3"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  transform="rotate(-23 12 12)"
+                />
+                <circle cx="20.6" cy="9" r="1.4" fill="currentColor" />
+              </svg>
+            </span>
             <span>
               <strong>Manspace</strong>
               <em>Atlas Astronomi Interaktif</em>
